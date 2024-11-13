@@ -1,0 +1,9 @@
+Para ejecutar:
+docker build -t mi-app-fastapi .
+docker run -p 80:80 mi-app-fastapi
+
+Para parar:
+# Lista todos los contenedores en ejecución
+docker ps
+# Detén el contenedor usando su ID o nombre
+docker stop <container_id>
