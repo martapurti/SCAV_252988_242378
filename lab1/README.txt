@@ -1,4 +1,6 @@
-Bones,
 
-No ens ha donat temps a separar els unit test en un altre document .py. T'hem adjuntat el .pynb i el .py del mateix que es una versió exportada d'aquest. Per la pràctica 1 tenim pensat separar-ho, ja t'ho actualitzarem!
+A la carpeta Lab1, està el first_seminar.py (en el nostre cas first_seminar2.py). També estan els unit tests. Obrir la carpeta a través del Visual Studio perquè funcioni. 
+
+També hem inclòs el fitxer .ipynb, ja que havíem començat Google Colab i hem fet el traspàs a fitxer Python.
+
 
