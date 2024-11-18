@@ -1,9 +1,30 @@
 Para ejecutar:
-docker build -t mi-app-fastapi .
-docker run -p 80:80 mi-app-fastapi
+# Aquest només quan hi han canvis al codi
+docker build -t mi-app-fastapi . 
+
+# Run
+docker run -p 8000:80 mi-app-fastapi # http://localhost:8000
 
 Para parar:
 # Lista todos los contenedores en ejecución
 docker ps
 # Detén el contenedor usando su ID o nombre
 docker stop <container_id>
+
+# Detén todos a la vez
+docker stop $(docker ps -q)
+
+# Elimina todos los contenedores detenidos
+docker rm $(docker ps -a -q)
+
+# Invoke/execute functions
+Invoke-WebRequest -Uri 'http://localhost:8000/?r=3.0&g=125.0&b=8.0' -Method POST
+
+curl -X 'POST' 'http://localhost:8000/convert-yuv2rgb?y=16.85&u=128&v=128' -H 'accept: application/json' -d ''
+
+//----------------------------------------------------------
+# Per descarregar la image del ffmpeg
+docker pull jrottenberg/ffmpeg
+
+# Executar el compose
+docker-compose up --build
