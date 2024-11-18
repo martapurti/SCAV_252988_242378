@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/data
+    networks:
+      - mynetwork
+
+  ffmpeg:
+    image: jrottenberg/ffmpeg:latest
+    volumes:
+      - ./data:/data
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
