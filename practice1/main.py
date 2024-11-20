@@ -34,12 +34,17 @@ def yuv2rgb(y, u, v):
 
 
 def resize_and_reduce_quality(input_image, output_image, width, height, quality):
-    ffmpeg_command = (
-        f"docker exec practice1-ffmpeg-1 bash -c \"ffmpeg -i {input_image} -vf scale={width}:{height} "
-        f"-q:v {quality} {output_image}\""
-        
-    )
-    subprocess.run(ffmpeg_command, shell=True, check=True)
+    # Usar el nombre del servicio como hostname
+    ffmpeg_command = [
+        "ffmpeg", 
+        "-i", f"/app/content/{input_image}",
+        "-vf", f"scale={width}:{height}",
+        "-q:v", str(quality),
+        f"/app/content/{output_image}"
+    ]
+    # Ejecutar comando desde el contenedor FastAPI, apuntando al servicio `ffmpeg`
+    subprocess.run(ffmpeg_command, check=True)
+
 #"bash -c 'tail -f /d…"
 
 def get_image_dimensions(image_path): # Just in case

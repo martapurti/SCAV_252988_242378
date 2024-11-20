@@ -5,9 +5,7 @@ FROM python:3.9
 WORKDIR /app
 
 # Instala ffmpeg
-RUN apt-get update && \
-    #Ara tenim la image jrottenberg/ffmpeg
-    rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y ffmpeg
 
 
 # Copia el archivo de dependencias (requirements.txt) y el código al contenedor
@@ -19,9 +17,6 @@ COPY main.py /app/main.py
 
 # Instala las dependencias
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Expone el puerto 80 para el API
-EXPOSE 80
 
 # Comando para ejecutar FastAPI usando Uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

@@ -20,7 +20,9 @@ docker rm $(docker ps -a -q)
 # Invoke/execute functions
 Invoke-WebRequest -Uri 'http://localhost:8000/?r=3.0&g=125.0&b=8.0' -Method POST
 
-curl -X 'POST' 'http://localhost:8000/convert-yuv2rgb?y=16.85&u=128&v=128' -H 'accept: application/json' -d ''
+Invoke-WebRequest -Uri 'http://localhost:8000/convert-yuv2rgb?y=10&u=10&v=10' -Method POST -Headers @{accept = 'application/json'} -Body ''
+
+
 
 //----------------------------------------------------------
 # Per descarregar la image del ffmpeg
