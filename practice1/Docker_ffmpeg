@@ -1,0 +1,13 @@
+# Usa una imagen base de Python 3.9
+FROM python:3.9
+
+# Establece el directorio de trabajo en /app
+WORKDIR /app
+
+# Instala ffmpeg
+RUN apt-get update && \
+    apt-get install -y ffmpeg && \
+    rm -rf /var/lib/apt/lists/*
+
+# Comando para ejecutar FastAPI usando Uvicorn
+CMD ["bash", "-c", "tail -f /dev/null"]

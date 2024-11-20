@@ -32,17 +32,10 @@ def yuv2rgb(y, u, v):
   ffmpeg_command = f'ffmpeg -i {input_image} -vf "scale={width}:{height}" -q:v {quality} {output_image}'
   subprocess.run(ffmpeg_command, shell=True, check=True)
 
-# Checkea els parametres d'entrada de la funció
-class ResizeRequest(BaseModel):
-    input_image: str
-    output_image: str
-    width: int
-    height: int
-    quality: int
 
 def resize_and_reduce_quality(input_image, output_image, width, height, quality):
     ffmpeg_command = (
-        f"docker exec ffmpeg ffmpeg -i {input_image} -vf scale={width}:{height} "
+        f"docker exec practice1-ffmpeg-1 ffmpeg -i {input_image} -vf scale={width}:{height} "
         f"-q:v {quality} {output_image}"
     )
     subprocess.run(ffmpeg_command, shell=True, check=True)
@@ -238,34 +231,25 @@ class dwt_conversion:
 
 
 # ENDPOINTS ------------------------------------------------------------------------
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to my API"}
 
+#TASK 2
 @app.post("/convert-rgb2yuv")
 async def convert_rgb2yuv(r: float, g: float, b: float):
     y, u, v = rgb2yuv(r, g, b)
     return {"y": y, "u": u, "v": v}
 
+#TASK 2
 @app.post("/convert-yuv2rgb")
 async def convert_yuv2rgb(y: float, u: float, v: float):
     r, g, b = yuv2rgb(y, u, v)
     return {"r": r, "g": g, "b": b}
 
-# Endpoint de FastAPI para redimensionar la imagen
+# TASK 3
 @app.post("/resize")
-async def resize_image(request: ResizeRequest):
-    try:
-        # Llamar a la función
-        resize_and_reduce_quality(
-            request.input_image,
-            request.output_image,
-            request.width,
-            request.height,
-            request.quality
-        )
-        return {"message": "Imagen procesada exitosamente"}
-    except subprocess.CalledProcessError:
-        raise HTTPException(status_code=500, detail="Hubo un error al procesar la imagen")
-
-
+async def resize(input_image: str, output_image: str, width: int, height: int, quality: int):
+  resize_and_reduce_quality(input_image, output_image,
+                                    width, height, quality)

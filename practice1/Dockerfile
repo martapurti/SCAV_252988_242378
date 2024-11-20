@@ -9,6 +9,7 @@ RUN apt-get update && \
     #Ara tenim la image jrottenberg/ffmpeg
     rm -rf /var/lib/apt/lists/*
 
+
 # Copia el archivo de dependencias (requirements.txt) y el código al contenedor
 COPY requirements.txt /app/requirements.txt
 # Carpeta amb les imatges

@@ -8,14 +8,21 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./data:/data
+      - ./content:/app/content
     networks:
       - mynetwork
+    depends_on:
+      - ffmpeg
 
   ffmpeg:
-    image: jrottenberg/ffmpeg:latest
+    build: 
+      context: .
+      dockerfile: Docker_ffmpeg
+    #image: jrottenberg/ffmpeg:latest
+   # command: ["bash", "-c", "tail -f /dev/null"]
+    #command: ["tail", "-f", "/dev/null"]
     volumes:
-      - ./data:/data
+      - ./content:/app/content
     networks:
       - mynetwork
 
