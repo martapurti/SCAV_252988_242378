@@ -34,7 +34,6 @@ def yuv2rgb(y, u, v):
 
 
 def resize_and_reduce_quality(input_image, output_image, width, height, quality):
-    # Usar el nombre del servicio como hostname
     ffmpeg_command = [
         "ffmpeg", 
         "-i", f"/app/content/{input_image}",
@@ -42,7 +41,6 @@ def resize_and_reduce_quality(input_image, output_image, width, height, quality)
         "-q:v", str(quality),
         f"/app/content/{output_image}"
     ]
-    # Ejecutar comando desde el contenedor FastAPI, apuntando al servicio `ffmpeg`
     subprocess.run(ffmpeg_command, check=True)
 
 #"bash -c 'tail -f /d…"
@@ -156,12 +154,16 @@ def serpentine(file_path):
   ffmpeg_command = f'ffmpeg -i {input_image} -vf "format=gray" -q:v {quality} {output_image}'
   subprocess.run(ffmpeg_command, shell=True, check=True)
 
-def compress2bw(input_image, output_image, quality=1):
-    ffmpeg_command = (
-        f"docker exec ffmpeg ffmpeg -i {input_image} -vf format=gray "
-        f"-q:v {quality} {output_image}"
-    )
-    subprocess.run(ffmpeg_command, shell=True, check=True)
+def compress_to_bw(input_image, output_image, quality=1):
+    ffmpeg_command = [
+        "ffmpeg",
+        "-i", f"/app/content/{input_image}",
+        "-vf", "format=gray",  
+        "-q:v", str(quality),
+        f"/app/content/{output_image}"
+    ]
+    subprocess.run(ffmpeg_command, check=True)
+
 
 
 # TASK 6
