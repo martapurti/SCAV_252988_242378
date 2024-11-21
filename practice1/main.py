@@ -43,7 +43,6 @@ def resize_and_reduce_quality(input_image, output_image, width, height, quality)
     ]
     subprocess.run(ffmpeg_command, check=True)
 
-#"bash -c 'tail -f /d…"
 
 def get_image_dimensions(image_path): # Just in case
   img = Image.open(image_path)

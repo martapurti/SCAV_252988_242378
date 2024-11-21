@@ -14,9 +14,12 @@ COPY requirements.txt /app/requirements.txt
 COPY content /app/content 
 # Seminari passat
 COPY main.py /app/main.py
+# Unit tests
+COPY unit_tests.py /app/unit_tests.py
 
 # Instala las dependencias
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Comando para ejecutar FastAPI usando Uvicorn
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+#CMD ["python", "-m", "unittest", "unit_tests.py"]
