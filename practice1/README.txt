@@ -1,30 +1,22 @@
-A veure, apunto per a que no se m'oblidi:
+REPORT PRACTICE 1
 
-He modificat el Dockerfile i li he tret que es descarregui el ffmpeg.
+Per fer aquesta pràctica vam haver de crear un docker file el qual vam anomenar Dockerfile. En aquest, vam establir un
+directori de treball /app i vam instal·lar ffmpeg. A més a més, dins d'aquest directori, vam copiar tots els archius de
+dependència com requirements.txt, la carpeta content (on es troben totes les imatges que hem utilitzat), i per últim el
+nostre main.py on estan declarades totes les funcions que vam fer al seminari 1.
 
-Ara, per poder utilizar el ffmpeg, he fet "pull" de la següent imatge publica de ffmpeg (fer-ho a la terminal amb el directori del projecte): docker pull jrottenberg/ffmpeg
+Seguidament, encara dins del dockerfile, vam instal·lar totes les dependencies declarades al archiu requirements i finalment,
+vam afegir un command per executar FastAPI utilitzant Uvicorn.
 
-Aquest docker ja te totes les funcionalitas de ffmpeg ;)
+Aquest command inicia un servidor web que serveix l'aplicació definida a main.py amb la instància app. Escolta en totes les 
+interfícies del contenidor al port 8000. Fa que l'aplicació sigui accessible des de el host de Docker 
+(mitjançant docker run -p 8000:8000).
 
-Ara l'objectiu es crear un docker-compose, que al executar-se comuniqui el docker jrottenberg/ffmpeg (el que acabem de descarregar) amb el nostre Dockerfile per poder seguir utilitzant les funcions amb el ffmpeg
+Ara per testejar la nostra API, hem creat diveros endpoints, els quals ens permetran comunicarnos amb la API a través de
+solicituds com per exemple, POST.
 
-He creat el docker-compose (el chat me l'ha fet) on suposadament ja es connecten.
+Finalment, en l'últim pas, se'ns demanava crear un docker-compose. L'objectiu aquí, era connectar el nostre docker file amb 
+un ffmpeg docker. Per fer-ho vam haver de crear un docker nou anomenat. Docker_ffmpeg i vam instal·lar el ffmpeg. 
 
-Ara, per executar aquest, he fet: 
-docker-compose up --build
-(Només amb això executa el docker-compose, que aquest mateix també executa el nostre Dockerfile)
-
-He afegit un endpoint de la tasca 3 per veure si funciona el ffmpeg. Vas a localhost:8000/docs i surt bé :)
-
-L'unic, que el chat m'ha fet crear una classe per aquesta tasca per comprobar que els inputs estàn bé. Llavors si introduïm dades valides, suposadament hauria de funcionar i en cas de dades invalides surt un missatge de: "Error al processar la imatge" o algo així.
-
-S'ha de comprobar la classe pq el chat m'ha dit de posar strings com a input d'imatge, i doncs no entenc com vol fer resize d'una string (ho he provat i no hem deixa).
-
-Conclusió, el docker-compose sembla que xuta sense problemes pero estaria bé fer un endpoint amb una tasca que es necessiti el ffmpeg per quedar com unes reines, així que s'hauria de mirar d'arreglar això.
-
- 
-
-
-
-
-
+En aquest, amb aquest docker-compose, el nostre Dockerfile depen del Docker_ffmpeg, i hem posat compartida la carpeta 
+de content per a que puguin accedir tots dos a les imatges.
