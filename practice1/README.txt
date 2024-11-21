@@ -20,3 +20,6 @@ un ffmpeg docker. Per fer-ho vam haver de crear un docker nou anomenat. Docker_f
 
 En aquest, amb aquest docker-compose, el nostre Dockerfile depen del Docker_ffmpeg, i hem posat compartida la carpeta 
 de content per a que puguin accedir tots dos a les imatges.
+
+Per l'utilització de la API, fer docker-compose up --build, i anar a localhost:8000/docs. Aquí es trobaran algunes funcions
+del main.py per interactuar amb elles. 
