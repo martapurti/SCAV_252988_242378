@@ -34,7 +34,7 @@ class TestTask3(unittest.TestCase):
     
     def test_resize_and_reduce_quality(self):
         # Input image path
-        input_image = 'lab1\content\piplup.png'
+        input_image = 'seminar1\content\piplup.png'
         print("Input image dimensions: ", get_image_dimensions(input_image), "\n")
 
         # Output image path
@@ -82,7 +82,7 @@ class TestTask4(unittest.TestCase):
 class TestTask5(unittest.TestCase):
     def test_compress2bw(self):
         # Define input image path (adjust based on your test environment)
-        input_image = 'lab1\content\piplup.png'
+        input_image = 'seminar1\content\piplup.png'
 
         # Get image dimensions
         w, h = get_image_dimensions(input_image)
@@ -123,7 +123,7 @@ class TestTask6(unittest.TestCase):
 class TestTask7(unittest.TestCase):
     def test_dct_idct(self):
         # Load the input image as grayscale
-        input_image = cv2.imread("lab1\content\piplup.png", cv2.IMREAD_GRAYSCALE)
+        input_image = cv2.imread("seminar1\content\piplup.png", cv2.IMREAD_GRAYSCALE)
 
         # Perform DCT on the input image
         dct_matrix = DCTConversion.dct2(input_image)
@@ -150,7 +150,7 @@ class TestTask7(unittest.TestCase):
 class TestTask8(unittest.TestCase):
     def test_dwt_idwt(self):
         # Load the image in grayscale
-        image_path = "lab1\content\color.jpg"
+        image_path = "seminar1\content\color.jpg"
         image = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
 
         print("Original Image:")
