@@ -6,4 +6,3 @@ scipy
 Pillow
 numpy
 matplotlib
-

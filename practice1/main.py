@@ -10,6 +10,7 @@ from PIL import Image
 import subprocess
 import io
 
+
 app = FastAPI()
 
 # Funciones seminar 1
@@ -35,13 +36,15 @@ def yuv2rgb(y, u, v):
 
 def resize_and_reduce_quality(input_image, output_image, width, height, quality):
     ffmpeg_command = [
-        "ffmpeg", 
+        "docker", "exec", "ffmpeg_container",
+        "ffmpeg", "-y",
         "-i", f"/app/content/{input_image}",
         "-vf", f"scale={width}:{height}",
         "-q:v", str(quality),
         f"/app/content/{output_image}"
     ]
     subprocess.run(ffmpeg_command, check=True)
+    print(f"Image saved as {output_image}")
 
 
 def get_image_dimensions(image_path): # Just in case
