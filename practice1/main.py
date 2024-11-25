@@ -158,15 +158,16 @@ def serpentine(file_path):
 
 def compress_to_bw(input_image, output_image, quality=1):
     ffmpeg_command = [
-        "ffmpeg",
+        "docker", "exec", "ffmpeg_container",
+        "ffmpeg", "-y",
         "-i", f"/app/content/{input_image}",
         "-vf", "format=gray",  
         "-q:v", str(quality),
         f"/app/content/{output_image}"
     ]
     subprocess.run(ffmpeg_command, check=True)
-
-
+    print(f"Image saved as {output_image}")
+ 
 
 # TASK 6
 def run_length(data_stream):
