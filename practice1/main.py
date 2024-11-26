@@ -264,3 +264,6 @@ async def convert_yuv2rgb(y: float, u: float, v: float):
 async def resize(input_image: str, output_image: str, width: int, height: int, quality: int):
   resize_and_reduce_quality(input_image, output_image,
                                     width, height, quality)
+  return {"message": f"Image {input_image} modified and saved as {output_image}"}
+  
+  
