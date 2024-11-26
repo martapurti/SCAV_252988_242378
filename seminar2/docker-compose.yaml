@@ -4,8 +4,8 @@ services:
   ffmpeg:
     build: 
       context: .
-      dockerfile: Docker_ffmpeg # on es troba el dockerfile
-    container_name: ffmpeg_container 
+      dockerfile: Docker_ffmpeg2 # on es troba el dockerfile
+    container_name: ffmpeg_container_s2
     volumes:
       - ./content:/app/content # carpeta amb les imatges
       - /var/run/docker.sock:/var/run/docker.sock # socket de docker
@@ -16,10 +16,10 @@ services:
   fastapi:
     build:
       context: .
-      dockerfile: Dockerfile
-    container_name: fastapi_container
+      dockerfile: Dockerfile2
+    container_name: fastapi_container_s2
     ports:
-      - "8000:8000"
+      - "5000:5000"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock # socket docker
       - ./content:/app/content # carpeta amb les imatges (compartida pels 2)
