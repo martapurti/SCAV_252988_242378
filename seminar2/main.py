@@ -16,9 +16,9 @@ import asyncio
 
 app = FastAPI()
 
-# New functions
+# New functions ---------------------------------------------------------------------
 
-#TASK 1---------------------------------------------------------------------
+# TASK 1 
 
 #Create a new endpoint / feature which will let you to modify the resolution
 async def modify_res(input_video, output_video, width, height, quality):
@@ -46,7 +46,7 @@ async def modify_res(input_video, output_video, width, height, quality):
         
 #-----------------------------------------------------------------------------
 
-#TASK 2---------------------------------------------------------------------
+# TASK 2 
 #2) Create a new endpoint / feature which will let you to modify the chroma subsampling
 #Practice of encoding images by implementing less resolution for Chroma / Luma
 #Subsampling a:x:y (chroma resolution) / ax2 block of luma pixels
@@ -62,9 +62,9 @@ def chroma_subsampling(input_video, output_video, subsampling_3ratio):
             "ffmpeg", "-y",
             "-i", f"/app/content/{input_video}",  
             "-vf", f"format=yuv{subsampling_3ratio}p", #Chroma subsampling ratio = 4:2:2
-            "-c:v", "libx264",  #Video codec
-            "-b:v", "2M",  #Video bitrate
-            "-c:a", "aac",  #Audio codec
+            "-c:v", "libx264",
+            "-b:v", "2M", 
+            "-c:a", "aac", 
             f"/app/content/{output_video}"
         ]
 
@@ -77,8 +77,9 @@ def chroma_subsampling(input_video, output_video, subsampling_3ratio):
         print(f"An error occurred: {e}")
 
 #----------------------------------------------------------------------------
-# TASK 3
-#Create a new endpoint / feature which lets you read the video info and print at least 5 relevant data from the video
+
+# TASK 3 
+#Create a new endpoint/feature which lets you read the video info and print at least 5 relevant data from the video
 def info_video(input_video):
     try:
         # Construir el comando ffprobe para obtener información del video
@@ -108,7 +109,8 @@ def info_video(input_video):
         print(f"An error occurred: {e}")
 
 #----------------------------------------------------------------------------
-# TASK 4
+
+# TASK 4 
 #Cut BBB into 20 seconds only video
 #Export BBB(20s) audio as AAC mono track
 #Export BBB(20s) audio in MP3 stereo w/ lower bitrate
@@ -142,8 +144,73 @@ async def new_container(input_video, output_video):
         print(f"An error occurred: {e}")
 
 #----------------------------------------------------------------------------
-# TASK 5
+
+# TASK 5 
 #
+
+#----------------------------------------------------------------------------
+
+
+# TASK 6 
+# Creat a new endpoint / feature which will output a video that will show the motion vectors
+# Los macroblockes no se pueden hacer con ffmpeg... Si no se puede, no se puede, que se le va a hacer :(
+async def motion_vectors(input_video, output_video):
+    try:
+        ffmpeg_cmd = [
+            "docker", "exec", "ffmpeg_container_s2",
+            "ffmpeg", "-y",
+            "-i", f"/app/content/{input_video}",
+            "-vf", "codecview=mv=1",   # Filtro para mostrar motion vectors
+            "-c:v", "libx264",  # Codec de salida H.264
+            f"/app/content/{output_video}"
+        ]
+
+        process = await asyncio.create_subprocess_exec(
+            *ffmpeg_cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
+        )
+        stdout, stderr = await process.communicate()
+         
+        if process.returncode != 0:
+            raise Exception(f"Error in ffmpeg: {stderr.decode()}")
+
+        print(f"Output video saved as {output_video}")
+
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred: {e}")
+
+#----------------------------------------------------------------------------   
+
+# TASK 7 
+# Create a new endpoint / feature which will output a video that will show the YUV histogram
+async def yuv_histogram(input_video, output_video):
+    try:
+        ffmpeg_cmd = [
+            "docker", "exec", "ffmpeg_container_s2",
+            "ffmpeg", "-y",
+            "-i", f"/app/content/{input_video}",
+            "-vf", "split[main][hist];[hist]histogram,[main]overlay", # YUV histograma
+            "-c:v", "libx264",
+            f"/app/content/{output_video}"
+        ]
+
+        process = await asyncio.create_subprocess_exec(
+            *ffmpeg_cmd,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE
+        )
+        stdout, stderr = await process.communicate()
+         
+        if process.returncode != 0:
+            raise Exception(f"Error in ffmpeg: {stderr.decode()}")
+
+        print(f"Output video saved as {output_video}")
+
+    except subprocess.CalledProcessError as e:
+        print(f"An error occurred: {e}")
+
+
 
 # ENDPOINTS ------------------------------------------------------------------------
 
@@ -172,4 +239,19 @@ def information(input_video:str):
 @app.post("/container")
 async def container(input_video: str, output_video: str):
     await new_container(input_video, output_video)
+    return {"message": f"Video {input_video} modified and saved as {output_video}"}
+
+# TASK 5
+
+
+# TASK 6
+@app.post("/mvectors")
+async def mvectors(input_video: str, output_video: str):
+    await motion_vectors(input_video, output_video)
+    return {"message": f"Video {input_video} modified and saved as {output_video}"}
+
+# TASK 7
+@app.post("/histogram")
+async def histogram(input_video: str, output_video: str):
+    await yuv_histogram(input_video, output_video)
     return {"message": f"Video {input_video} modified and saved as {output_video}"}
