@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  ffmpeg:
+    build: 
+      context: .
+      dockerfile: Docker_ffmpeg2 # on es troba el dockerfile
+    container_name: ffmpeg_container_s2
+    volumes:
+      - ./content:/app/content # carpeta amb les imatges
+      - /var/run/docker.sock:/var/run/docker.sock # socket de docker
+    networks:
+      - mynetwork
+    command: ["bash", "-c", "tail -f /dev/null"] # comando perque s'executi infinitament
+
+  fastapi:
+    build:
+      context: .
+      dockerfile: Dockerfile2
+    container_name: fastapi_container_s2
+    ports:
+      - "5000:5000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # socket docker
+      - ./content:/app/content # carpeta amb les imatges (compartida pels 2)
+    networks:
+      - mynetwork
+    depends_on:
+      - ffmpeg # per iniciar primer el contenidor ffmpeg
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock # per executar docker
+
+
+networks:
+  mynetwork:
+    driver: bridge

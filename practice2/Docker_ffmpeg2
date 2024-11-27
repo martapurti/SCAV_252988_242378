@@ -1,0 +1,11 @@
+# Usa una imagen base de Python 3.9
+FROM python:3.9
+
+# Estableix el WorkDirectory a /app
+WORKDIR /app
+
+# Instal·la ffmpeg
+RUN apt-get update && apt-get install -y ffmpeg
+
+# Comando perq s'executi infinitament
+CMD ["bash", "-c", "tail -f /dev/null"]
