@@ -194,10 +194,10 @@ async def motion_vectors(input_video, output_video):
         ffmpeg_cmd = [
             "docker", "exec", "ffmpeg_container_s2",
             "ffmpeg", "-y",
-            "-i", f"/app/content/{input_video}",
-            "-vf", "codecview=mv=1",   # Filtro para mostrar motion vectors
-            "-c:v", "libx264",  # Codec de salida H.264
-            f"/app/content/{output_video}"
+            "-flags2", "+export_mvs", 
+            "-i", f"/app/content/{input_video}", 
+            "-vf", "codecview=mv=pf+bf+bb", 
+            f"/app/content/{output_video}" 
         ]
 
         process = await asyncio.create_subprocess_exec(
