@@ -64,6 +64,7 @@ def chroma_subsampling(input_video, output_video, subsampling_3ratio):
             "-vf", f"format=yuv{subsampling_3ratio}p", #Chroma subsampling ratio = 4:2:2
             "-c:v", "libx264",
             "-b:v", "2M", 
+            "-pix_fmt", "yuv420p",
             "-c:a", "aac", 
             f"/app/content/{output_video}"
         ]
@@ -146,14 +147,48 @@ async def new_container(input_video, output_video):
 #----------------------------------------------------------------------------
 
 # TASK 5 
-#
+#use ffprobe: a tool that comes with ffmpeg to inspect the media file structure
+async def count_tracks(input_video):
+    try:
+        ffmpeg_cmd = [ "docker", "exec", "ffmpeg_container_s2",
+                "ffprobe", "-v", "error",
+                "-show_entries", "stream=index,codec_type",
+                "-of", "json",
+                f"/app/content/{input_video}"]
+
+        process = await asyncio.create_subprocess_exec(
+                *ffmpeg_cmd,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE
+            )
+        stdout, stderr = await process.communicate()
+            
+        if process.returncode != 0:
+            raise Exception(f"FFprobe error: {stderr.decode()}")
+            
+        # Parse the FFprobe output
+        metadata = json.loads(stdout.decode())
+        streams = metadata.get("streams", [])
+            
+        # Count track types
+        track_counts = {"video": 0, "audio": 0, "subtitle": 0}
+        for stream in streams:
+            codec_type = stream.get("codec_type")
+            if codec_type in track_counts:
+                track_counts[codec_type] += 1
+            
+        print(track_counts)
+
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    
 
 #----------------------------------------------------------------------------
 
 
 # TASK 6 
 # Creat a new endpoint / feature which will output a video that will show the motion vectors
-# Los macroblockes no se pueden hacer con ffmpeg... Si no se puede, no se puede, que se le va a hacer :(
+# Los macroblockes no se pueden hacer con ffmpeg
 async def motion_vectors(input_video, output_video):
     try:
         ffmpeg_cmd = [
@@ -242,7 +277,10 @@ async def container(input_video: str, output_video: str):
     return {"message": f"Video {input_video} modified and saved as {output_video}"}
 
 # TASK 5
-
+@app.post("/count_tracks")
+async def countt(input_video:str):
+    await count_tracks(input_video)
+    
 
 # TASK 6
 @app.post("/mvectors")
