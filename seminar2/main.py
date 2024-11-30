@@ -269,6 +269,7 @@ async def chromass(input_video:str, output_video:str, subsampling_3ratio:int):
 @app.post("/video_infomation")
 def information(input_video:str):
     info_video(input_video)
+    return {"Video information printed in the terminal"}
 
 # TASK 4
 @app.post("/container")
@@ -280,6 +281,7 @@ async def container(input_video: str, output_video: str):
 @app.post("/count_tracks")
 async def countt(input_video:str):
     await count_tracks(input_video)
+    return {"Number of tracks printed in the terminal"}
     
 
 # TASK 6
