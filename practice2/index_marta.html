@@ -104,15 +104,9 @@
                 return;
             }
 
-            let outputExtension = '.mp4';
-
-            if (codec === 'vp8' || codec === 'vp9') {
-                outputExtension = '.webm';
-}
-
             const formData = new FormData();
             formData.append("input_video", inputVideo);
-            formData.append("output_video", outputVideo + outputExtension); // + extension
+            formData.append("output_video", outputVideo + '.mp4'); // Set the output video extension
             formData.append("codec", codec);
 
             try {

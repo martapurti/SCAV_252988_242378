@@ -47,23 +47,14 @@ async def convert_video(input_video, output_video, codec):
 
         if codec not in codec_params:
             raise ValueError(f"Unsupported codec '{codec}'. Supported codecs are: {list(codec_params.keys())}")
-        
-        # Adjust output container for VP8 and VP9
-        if codec in ["vp8", "vp9"]:
-            if not output_video.endswith(".webm"):
-                output_video = f"{output_video.split('.')[0]}.webm"
-        else:
-            if not output_video.endswith(".mp4"):
-                output_video = f"{output_video.split('.')[0]}.mp4"
-
 
         ffmpeg_cmd = [
             "docker", "exec", "ffmpeg_container_s2",
             "ffmpeg", "-y",
             "-i", f"/app/content/{input_video}",
             *codec_params[codec],
+            f"/app/content/{output_video}"
         ]
-
 
         process = await asyncio.create_subprocess_exec(
             *ffmpeg_cmd,
