@@ -64,7 +64,7 @@ def chroma_subsampling(input_video, output_video, subsampling_3ratio):
             "-vf", f"format=yuv{subsampling_3ratio}p", #Chroma subsampling ratio = 4:2:2
             "-c:v", "libx264",
             "-b:v", "2M", 
-            "-pix_fmt", "yuv420p",
+             "-pix_fmt", f"yuv{subsampling_3ratio}p",
             "-c:a", "aac", 
             f"/app/content/{output_video}"
         ]
@@ -166,7 +166,6 @@ async def count_tracks(input_video):
         if process.returncode != 0:
             raise Exception(f"FFprobe error: {stderr.decode()}")
             
-        # Parse the FFprobe output
         metadata = json.loads(stdout.decode())
         streams = metadata.get("streams", [])
             
@@ -260,7 +259,7 @@ async def reduce(input_video: str, output_video: str, width: int, height: int, q
     return {"message": f"Video {input_video} modified and saved as {output_video}"}
 
 #TASK 2
-@app.post("/chromass")
+@app.post("/chroma_subsampling")
 async def chromass(input_video:str, output_video:str, subsampling_3ratio:int):
     chroma_subsampling(input_video, output_video, subsampling_3ratio)
     return {"message": f"Video {input_video} modified and saved as {output_video}"}
@@ -272,7 +271,7 @@ def information(input_video:str):
     return {"Video information printed in the terminal"}
 
 # TASK 4
-@app.post("/container")
+@app.post("/new_container")
 async def container(input_video: str, output_video: str):
     await new_container(input_video, output_video)
     return {"message": f"Video {input_video} modified and saved as {output_video}"}
@@ -285,13 +284,13 @@ async def countt(input_video:str):
     
 
 # TASK 6
-@app.post("/mvectors")
+@app.post("/motion_vectors")
 async def mvectors(input_video: str, output_video: str):
     await motion_vectors(input_video, output_video)
     return {"message": f"Video {input_video} modified and saved as {output_video}"}
 
 # TASK 7
-@app.post("/histogram")
+@app.post("/yuv_histogram")
 async def histogram(input_video: str, output_video: str):
     await yuv_histogram(input_video, output_video)
     return {"message": f"Video {input_video} modified and saved as {output_video}"}

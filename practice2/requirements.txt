@@ -6,3 +6,5 @@ scipy
 Pillow
 numpy
 matplotlib
+python-multipart
+

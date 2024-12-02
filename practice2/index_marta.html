@@ -15,7 +15,7 @@
             color: #333;
         }
         .container {
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
             background-color: #fff;
             padding: 20px;
@@ -92,7 +92,7 @@
     </div>
 
     <script>
-        const API_URL = 'http://0.0.0.0:5000';
+        const API_URL = 'http://127.0.0.1:5000';
 
         async function convertVideo() {
             const inputVideo = document.getElementById("inputVideo").files[0];
@@ -105,7 +105,7 @@
             }
 
             const formData = new FormData();
-            formData.append("input_video", inputVideo.name);
+            formData.append("input_video", inputVideo);
             formData.append("output_video", outputVideo + '.mp4'); // Set the output video extension
             formData.append("codec", codec);
 
@@ -137,7 +137,7 @@
             }
 
             const formData = new FormData();
-            formData.append("input_video", inputVideo.name);
+            formData.append("input_video", inputVideo);
             formData.append("output_video", outputVideo + '.mp4'); // Set the output video extension
             formData.append("codec", codec);
 
