@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monster API GUI</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; padding: 0; }
+        h1 { color: #444; }
+        form { margin-bottom: 20px; }
+        label { display: block; margin-top: 10px; }
+        button { margin-top: 10px; }
+        .output { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Monster API</h1>
+    <form id="upload-form">
+        <label for="file">Upload video:</label>
+        <input type="file" id="file" name="file" required>
+        
+        <label for="codec">Select codec:</label>
+        <select id="codec" name="codec">
+            <option value="vp8">VP8</option>
+            <option value="vp9">VP9</option>
+            <option value="h265">H.265</option>
+            <option value="av1">AV1</option>
+        </select>
+
+        <label for="mode">Mode:</label>
+        <select id="mode" name="mode">
+            <option value="single">Single Conversion</option>
+            <option value="ladder">Encoding Ladder</option>
+        </select>
+
+        <button type="submit">Process Video</button>
+    </form>
+
+    <div class="output" id="output"></div>
+
+    <script>
+        const form = document.getElementById("upload-form");
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const response = await fetch("/process/", {
+                method: "POST",
+                body: formData
+            });
+            const result = await response.json();
+            
+            const output = document.getElementById("output");
+            if (result.output_file) {
+                output.innerHTML = `
+                    <p>${result.message}</p>
+                    <a href="/download/${result.output_file}" download>Download Processed Video</a>
+                `;
+            } else {
+                output.innerHTML = `<p>${result.message}</p>`;
+            }
+        });
+    </script>
+</body>
+</html>

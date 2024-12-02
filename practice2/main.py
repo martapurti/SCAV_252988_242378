@@ -11,6 +11,9 @@ from PIL import Image
 import subprocess
 import io
 import asyncio
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
+
 
 
 
@@ -92,6 +95,12 @@ async def encoding_ladder(input_video, output_video, codec):
 
 
 # ENDPOINTS ------------------------------------------
+
+app.mount("/content", StaticFiles(directory="content"), name="content")
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    with open("index_marta.html", "r") as f:
+        return f.read()
 
 # TASK 1
 @app.post("/convert")
