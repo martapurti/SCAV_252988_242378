@@ -88,7 +88,7 @@ async def encoding_ladder(input_video, output_video, codec):
         tasks = []
         
         for profile in encoding_params:
-            output_video2 = f"{output_video.split('.')[0]}_{profile['resolution']}_{codec}.mp4"
+            output_video2 = f"{output_video.split('.')[0]}_{profile['resolution']}_{codec}"
             
             # Call convert_video for each profile
             tasks.append(convert_video(
