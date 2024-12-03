@@ -94,13 +94,14 @@ def info_video(input_video):
 
         video_info = json.loads(result)
 
-        print("Information:") # Here we print the video information in the terminal
-        print(f"Width: {video_info["streams"][0]["width"]} pixels")
-        print(f"Height: {video_info["streams"][0]["height"]} pixels")
-        print(f"Duration: {video_info["streams"][0]["duration"]} seconds")
-        print(f"Bit Rate: {video_info["streams"][0]["bit_rate"]} bps")
-        print(f"Codec: {video_info["streams"][0]["codec_name"]}")
-        print(f"Chroma Location: {video_info["streams"][0]["chroma_location"]}")
+        # Print the video information
+        print("Information:") 
+        print(f"Width: {video_info['streams'][0]['width']} pixels")
+        print(f"Height: {video_info['streams'][0]['height']} pixels")
+        print(f"Duration: {video_info['streams'][0]['duration']} seconds")
+        print(f"Bit Rate: {video_info['streams'][0]['bit_rate']} bps")
+        print(f"Codec: {video_info['streams'][0]['codec_name']}")
+        print(f"Chroma Location: {video_info['streams'][0]['chroma_location']}")
 
     except subprocess.CalledProcessError as e:
         print(f"An error occurred: {e}")
