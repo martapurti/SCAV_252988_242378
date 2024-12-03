@@ -119,7 +119,7 @@ async def encoding_ladder(input_video, output_video, codec):
 @app.post("/convert")
 async def convert(input_video: UploadFile = File(...), output_video: str = Form(...), codec: str = Form(...)):
     input_video_filename = input_video.filename
-    codec_type = codec
+    codec_type = str(codec)
     await convert_video(input_video_filename, output_video, codec_type)
     return {"message": f"Video {input_video} modified and saved as {output_video}"}
 
