@@ -6,6 +6,8 @@ Per aquesta pràctica utilitzem diversos fitxers:
 
 En aquest arxiu hem creat 7 endpoints, els quals ens permetran comunicar-nos amb la API a través de sol·licituds HTTP, concretament POST i GET. Aquests ens permetran testejar i interactuar les funcions. 
 
+Amb count_tracks() podem comprovar que la funció new_container() de la Task 4 funciona bé. Ens retorna audio = 3. Per la Task 6, degut a que els macroblocks no es poden fer amb ffmpeg, hem visualitzat únicament els motion vectors. 
+
 2) REQUIREMENTS.TXT
 
 L'arxiu requirements.txt inclou totes les dependències necessàries per executar el codi.
@@ -35,6 +37,8 @@ Finalment, en l'últim pas, vam crear un docker-compose. Per fer-ho vam haver de
 En el docker-compose, definim els dos serveis que s'han de coordinar: ffmpeg i fastapi. Tots dos tenen accés a la carpeta content. En aquest, el fastapi depèn del ffmpeg: volem que s'iniciï primer el ffmpeg, perquè el contenidor API el necessita. 
 
 Per la utilització de la API, obrim una terminal amb docker-compose up --build, i obrim un buscador amb  localhost:5000/docs. Aquí es trobaran els endpoints, funcions del main.py per interactuar amb elles. 
+
+
 
 
 
