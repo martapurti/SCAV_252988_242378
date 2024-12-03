@@ -62,6 +62,7 @@ async def convert_video(input_video, output_video, codec):
             "ffmpeg", "-y",
             "-i", f"/app/content/{input_video}",
             *codec_params[codec],
+            f"/app/content/{output_video}"
         ]
 
 
@@ -76,10 +77,11 @@ async def convert_video(input_video, output_video, codec):
             raise Exception(f"Error in ffmpeg: {stderr.decode()}")
 
         print(f"Output video saved as {output_video}")
-
+        return output_video
+    
     except Exception as e:
         print(f"An error occurred: {e}")
-
+        raise HTTPException(status_code=500, detail=f"Video conversion failed: {e}")
 
 # TASK 2
 async def encoding_ladder(input_video, output_video, codec):
@@ -96,7 +98,7 @@ async def encoding_ladder(input_video, output_video, codec):
         tasks = []
         
         for profile in encoding_params:
-            output_video2 = f"{output_video.split('.')[0]}_{profile['resolution']}_{codec}"
+            output_video2 = f"{output_video.split('.')[0]}_{profile['resolution']}_{codec}.mp4"
             
             # Call convert_video for each profile
             tasks.append(convert_video(
@@ -117,11 +119,11 @@ async def encoding_ladder(input_video, output_video, codec):
 
 # ENDPOINTS ------------------------------------------
 
-app.mount("/content", StaticFiles(directory="content"), name="content")
-@app.get("/", response_class=HTMLResponse)
-async def read_root():
-    with open("index_marta.html", "r") as f:
-        return f.read()
+# app.mount("/content", StaticFiles(directory="content"), name="content")
+# @app.get("/", response_class=HTMLResponse)
+# async def read_root():
+#     with open("index_marta.html", "r") as f:
+#         return f.read()
 
 # TASK 1
 @app.post("/convert")
