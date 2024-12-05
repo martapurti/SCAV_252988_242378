@@ -2,14 +2,8 @@
 import json
 from fastapi import FastAPI, File, Form, UploadFile, HTTPException
 from pydantic import BaseModel
-import cv2
-import pywt
 import numpy as np
 from scipy.fft import dct, idct
-from io import BytesIO
-from PIL import Image
-import subprocess
-import io
 import asyncio
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse
@@ -39,10 +33,10 @@ async def convert_video(input_video, output_video, codec):
     try:
         # Define codec-specific FFmpeg parameters
         codec_params = {
-            "vp8": ["-c:v", "libvpx", "-b:v", "1M"],
-            "vp9": ["-c:v", "libvpx-vp9", "-b:v", "1M"],
-            "h265": ["-c:v", "libx265", "-preset", "medium", "-crf", "28"],
-            "av1": ["-c:v", "libaom-av1", "-crf", "30", "-b:v", "0"]
+            "vp8": ["-c:v", "libvpx", "-b:v", "1M", "-c:a", "libvorbis", "-f", "webm"],
+            "vp9": ["-c:v", "libvpx-vp9", "-b:v", "1M", "-c:a", "libvorbis", "-f", "webm"],
+            "h265": ["-c:v", "libx265", "-preset", "medium", "-crf", "28", "-c:a", "aac", "-f", "mp4"],
+            "av1": ["-c:v", "libaom-av1", "-crf", "30", "-b:v", "0", "-c:a", "aac", "-f", "mp4"]
         }
 
         if codec not in codec_params:
@@ -53,6 +47,7 @@ async def convert_video(input_video, output_video, codec):
             "ffmpeg", "-y",
             "-i", f"/app/content/{input_video}",
             *codec_params[codec],
+            "-movflags", "+faststart", 
             f"/app/content/{output_video}"
         ]
 
@@ -88,14 +83,9 @@ async def encoding_ladder(input_video, output_video, codec):
         tasks = []
         
         for profile in encoding_params:
-            output_video2 = f"{output_video.split('.')[0]}_{profile['resolution']}_{codec}"
-            
+            output_video2 = f"{output_video}_{profile['resolution']}_{codec}.mp4"
             # Call convert_video for each profile
-            tasks.append(convert_video(
-                input_video,
-                output_video2,
-                codec
-            ))
+            tasks.append(convert_video(input_video, output_video2, codec ))
 
         # Execute all tasks in parallel
         await asyncio.gather(*tasks)
@@ -105,7 +95,7 @@ async def encoding_ladder(input_video, output_video, codec):
 
     except Exception as e:
         print(f"An error occurred: {e}")
-
+        raise HTTPException(status_code=500, detail=f"Encoding ladder failed: {e}")
 
 # ENDPOINTS ------------------------------------------
 
@@ -118,15 +108,17 @@ async def encoding_ladder(input_video, output_video, codec):
 # TASK 1
 @app.post("/convert")
 async def convert(input_video: UploadFile = File(...), output_video: str = Form(...), codec: str = Form(...)):
-    input_video_filename = input_video.filename
-    codec_type = str(codec)
-    await convert_video(input_video_filename, output_video, codec_type)
-    return {"message": f"Video {input_video} modified and saved as {output_video}"}
+        input_video_filename = input_video.filename
+        await convert_video(input_video_filename, output_video, codec)
+        return {"message": f"Video {input_video} modified and saved as {output_video}"}
+    
 
+    
+        
 # TASK 2
 @app.post("/encodingLadder")
 async def encodingLadder(input_video: UploadFile = File(...), output_video: str = Form(...), codec: str = Form(...)):
-    input_video_filename = input_video.filename
-    await encoding_ladder(input_video_filename, output_video, codec)
-    return {"message": f"Video {input_video} modified and saved as {output_video}"}
+        input_video_filename = input_video.filename
+        await encoding_ladder(input_video_filename, output_video, codec)
+        return {"message": f"Video {input_video} modified and saved as {output_video}"}
 
