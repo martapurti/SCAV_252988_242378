@@ -3,36 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Video Processor</title>
+    <title>Video Conversion</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 30px;
+            margin: 0;
+            padding: 0;
             background-color: #f4f4f9;
         }
-        h1 {
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 0;
             text-align: center;
-            color: #333;
         }
         .container {
+            margin: 20px auto;
             max-width: 600px;
-            margin: 0 auto;
-            background-color: #fff;
             padding: 20px;
+            background-color: white;
             border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .form-group {
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+        }
+        input, select, button {
             margin-bottom: 15px;
-        }
-        .form-group label {
-            font-weight: bold;
-        }
-        .form-group input, .form-group select, .form-group button {
-            width: 95%;
             padding: 10px;
-            font-size: 16px;
-            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
         }
         button {
             background-color: #4CAF50;
@@ -43,126 +47,125 @@
         button:hover {
             background-color: #45a049;
         }
-        .status {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .status.success {
+        .message {
+            margin-top: 10px;
             color: green;
+            font-weight: bold;
         }
-        .status.error {
+        .error {
             color: red;
         }
     </style>
 </head>
 <body>
-
-    <h1>Video Processor</h1>
-    
+    <header>
+        <h1>Practice 2</h1>
+    </header>
     <div class="container">
-        <div class="form-group">
-            <label for="inputVideo">Select Input Video</label>
-            <input type="file" id="inputVideo" accept="video/*">
-        </div>
-
-        <div class="form-group">
-            <label for="outputVideo">Output Video</label>
-            <input type="text" id="outputVideo" placeholder="Enter output video name">
-        </div>
-
-        <div class="form-group">
-            <label for="codec">Select Codec</label>
-            <select id="codec">
-                <option value="vp8">VP8</option>
-                <option value="vp9">VP9</option>
-                <option value="h265">H.265</option>
-                <option value="av1">AV1</option>
+        <!-- Convert Single Video -->
+        <h2>Task 1: Convert Video</h2>
+        <form id="convertForm">
+            <label for="input_video">Upload Video:</label>
+            <input type="file" id="input_video" name="input_video" required>
+            
+            <label for="output_video_name">Output Video Name:</label>
+            <input type="text" id="output_video_name" name="output_video_name" placeholder="example.mp4 / example.webm" required>
+            
+            <label for="codec">Select Codec:</label>
+            <select id="codec" name="codec" required>
+                <option value="VP8">VP8</option>
+                <option value="VP9">VP9</option>
+                <option value="h265">h265</option>
+                <option value="AV1">AV1</option>
             </select>
-        </div>
+            
+            <label for="new_resolution">Select Resolution:</label>
+            <select id="new_resolution" name="new_resolution" required>
+                <option value="240p">240p</option>
+                <option value="360p">360p</option>
+                <option value="720p">720p</option>
+                <option value="1080p">1080p</option>
+            </select>
+            
+            <button type="button" id="convertButton">Convert</button>
+            <div class="message" id="convertMessage"></div>
+        </form>
 
-        <div class="form-group">
-            <button onclick="convertVideo()">Convert Video</button>
-        </div>
-
-        <div class="form-group">
-            <button onclick="generateEncodingLadder()">Generate Encoding Ladder</button>
-        </div>
-
-        <div class="status" id="status"></div>
+        <!-- Encoding Ladder -->
+        <h2>Task 2: Encoding Ladder</h2>
+        <form id="ladderForm">
+            <label for="ladder_input_video">Upload Video:</label>
+            <input type="file" id="ladder_input_video" name="input_video" required>
+            
+            <label for="output_video_base">Output Video Base Name (without extension):</label>
+            <input type="text" id="output_video_base" name="output_video_base" placeholder="example" required>
+            
+            <label for="ladder_codec">Select Codec:</label>
+            <select id="ladder_codec" name="codec" required>
+                <option value="VP8">VP8</option>
+                <option value="VP9">VP9</option>
+                <option value="h265">h265</option>
+                <option value="AV1">AV1</option>
+            </select>
+            
+            <button type="button" id="ladderButton">Generate Encoding Ladder</button>
+            <div class="message" id="ladderMessage"></div>
+        </form>
     </div>
-
     <script>
         const API_URL = 'http://127.0.0.1:5000';
 
-        async function convertVideo() {
-            const inputVideo = document.getElementById("inputVideo").files[0];
-            const outputVideo = document.getElementById("outputVideo").value;
-            const codec = document.getElementById("codec").value;
-
-            if (!inputVideo || !outputVideo) {
-                displayStatus('Please select an input video and provide an output file.', 'error');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append("input_video", inputVideo);
-            formData.append("output_video", outputVideo); // Set the output video extension
-            formData.append("codec", codec);
+        // Handle Convert Video
+        document.getElementById('convertButton').addEventListener('click', async () => {
+            const form = document.getElementById('convertForm');
+            const formData = new FormData(form);
+            const messageElement = document.getElementById('convertMessage');
+            messageElement.textContent = '';
 
             try {
                 const response = await fetch(`${API_URL}/convert`, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
                 });
 
-                const data = await response.json();
+                const result = await response.json();
                 if (response.ok) {
-                    displayStatus(`Video conversion successful! ${data.message}`, 'success');
+                    messageElement.textContent = result.message;
                 } else {
-                    displayStatus(`Error: ${data.detail}`, 'error');
+                    messageElement.textContent = `Error: ${result.detail}`;
+                    messageElement.classList.add('error');
                 }
             } catch (error) {
-                displayStatus('An error occurred. Please try again.', 'error');
+                messageElement.textContent = `Request failed: ${error}`;
+                messageElement.classList.add('error');
             }
-        }
+        });
 
-        async function generateEncodingLadder() {
-            const inputVideo = document.getElementById("inputVideo").files[0];
-            const outputVideo = document.getElementById("outputVideo").value;
-            const codec = document.getElementById("codec").value;
-
-            if (!inputVideo || !outputVideo) {
-                displayStatus('Please select an input video and provide an output name.', 'error');
-                return;
-            }
-
-            const formData = new FormData();
-            formData.append("input_video", inputVideo);
-            formData.append("output_video", outputVideo); 
-            formData.append("codec", codec);
+        // Handle Encoding Ladder
+        document.getElementById('ladderButton').addEventListener('click', async () => {
+            const form = document.getElementById('ladderForm');
+            const formData = new FormData(form);
+            const messageElement = document.getElementById('ladderMessage');
+            messageElement.textContent = '';
 
             try {
                 const response = await fetch(`${API_URL}/encodingLadder`, {
                     method: 'POST',
-                    body: formData
+                    body: formData,
                 });
 
-                const data = await response.json();
+                const result = await response.json();
                 if (response.ok) {
-                    displayStatus(`Encoding ladder generated successfully! ${data.message}`, 'success');
+                    messageElement.textContent = result.message;
                 } else {
-                    displayStatus(`Error: ${data.detail}`, 'error');
+                    messageElement.textContent = `Error: ${result.detail}`;
+                    messageElement.classList.add('error');
                 }
             } catch (error) {
-                displayStatus('An error occurred. Please try again.', 'error');
+                messageElement.textContent = `Request failed: ${error}`;
+                messageElement.classList.add('error');
             }
-        }
-
-        function displayStatus(message, type) {
-            const statusElement = document.getElementById("status");
-            statusElement.textContent = message;
-            statusElement.className = 'status ' + type;
-        }
+        });
     </script>
 </body>
 </html>
