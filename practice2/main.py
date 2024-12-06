@@ -77,6 +77,7 @@ async def convert_video(input_video, output_video_name, codec, new_resolution):
             "-vf", f"scale={resolution}",
             "-b:v", bitrate,
             "-c:v", codecs_disponible[codec],
+            "-movflags", "faststart",
             "-c:a", audio_codec,  # Transcode audio for WebM
             f"/app/content/{output_video_name}",
         ]
