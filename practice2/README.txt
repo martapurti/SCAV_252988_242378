@@ -4,7 +4,7 @@ PRACTICE 2
 Per aquesta pràctica crearem un nou fitxer: index.html, on hi haurà el front-end per la nostra Monster API. 
 Dins ens trobarem com hem definit la pàgina, i com interactua aquesta amb el nostre back-end (main.py) on es troben definides les nostres funcions.
 Per executar-ho obrirem una terminal en el directori del projecte (practice2, en el nostre cas), i després de fer docker-compose up --build, posarem: 
-python -m http.server per poder accedir a la nostre GUI que hem creat en l'arxiu .html
+python -m http.server per poder accedir a la nostre GUI que hem creat en l'arxiu index.html
 
 Obrirem el buscador amb localhost:8000 per la seva visualització.
 
