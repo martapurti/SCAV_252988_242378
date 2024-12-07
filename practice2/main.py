@@ -143,5 +143,5 @@ async def convert(input_video: UploadFile = File(...), output_video_name: str = 
 async def encodingLadder(input_video: UploadFile = File(...), output_video_base: str = Form(...), codec: str = Form(...)):
         input_video = input_video.filename
         await encoding_ladder(input_video, output_video_base, codec)
-        return {"message": f"Video {input_video} modified and saved"}
+        return {"message": f"Encoding ladder correctly generated from {input_video}"}
 
