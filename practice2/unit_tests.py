@@ -6,9 +6,9 @@ from main import convert_video, encoding_ladder
 class Test1(unittest.TestCase):
     def test_convert_video(self):
         # Parameters
-        input_image = "BBB.mp4"  
+        input_image = "BBB20s.mp4"  
         output_image = "test1"
-        codec = 'h256'
+        codec = 'VP8'
         resolution = '240p'
 
         # Ejecutar 
@@ -18,9 +18,9 @@ class Test1(unittest.TestCase):
 class Test2(unittest.TestCase): 
     def test_encoding_ladder(self):
         # Parameters
-        input_image = "BBB.mp4" 
+        input_image = "BBB20s.mp4" 
         output_image = "test2" # Si el codec es vp8 o vp9 no posar extensió
-        codec = 'VP8'
+        codec = 'h265'
 
         # Ejecutar
         asyncio.run(encoding_ladder(input_image, output_image, codec))
