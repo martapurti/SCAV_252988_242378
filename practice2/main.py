@@ -60,11 +60,6 @@ async def convert_video(input_video, output_video_name, codec, new_resolution):
         # Resolve resolution and bitrate
         resolution = encoding_params[new_resolution]["resolution"]
         bitrate = encoding_params[new_resolution]["bitrate"]
-
-        # Save the uploaded video to a local path temporarily
-        #input_video_path = f"/tmp/{input_video.filename}"  # Save to a temporary directory
-        #with open(input_video_path, "wb") as f:
-        #    shutil.copyfileobj(input_video.file, f)
         
         # Adjust audio codec for WebM
         audio_codec = "libopus" if container == "webm" else "copy"
