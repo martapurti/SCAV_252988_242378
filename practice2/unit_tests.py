@@ -7,7 +7,7 @@ class Test1(unittest.TestCase):
     def test_convert_video(self):
         # Parameters
         input_image = "BBB20s.mp4"  
-        output_image = "test1.webm" # With extension, .webm for VP8 and VP9, .mp4 for the rest
+        output_image = "test1" # Without extension
         codec = 'VP8'
         resolution = '240p'
 
