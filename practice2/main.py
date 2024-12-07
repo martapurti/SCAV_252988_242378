@@ -62,9 +62,9 @@ async def convert_video(input_video, output_video_name, codec, new_resolution):
         bitrate = encoding_params[new_resolution]["bitrate"]
 
         # Save the uploaded video to a local path temporarily
-        input_video_path = f"/tmp/{input_video.filename}"  # Save to a temporary directory
-        with open(input_video_path, "wb") as f:
-            shutil.copyfileobj(input_video.file, f)
+        #input_video_path = f"/tmp/{input_video.filename}"  # Save to a temporary directory
+        #with open(input_video_path, "wb") as f:
+        #    shutil.copyfileobj(input_video.file, f)
         
         # Adjust audio codec for WebM
         audio_codec = "libopus" if container == "webm" else "copy"
@@ -73,7 +73,7 @@ async def convert_video(input_video, output_video_name, codec, new_resolution):
         ffmpeg_cmd = [
             "docker", "exec", "ffmpeg_container_s2",
             "ffmpeg", "-y",
-            "-i", f"/app/content/{input_video.filename}",
+            "-i", f"/app/content/{input_video}", # input_video.filename
             "-vf", f"scale={resolution}",
             "-b:v", bitrate,
             "-c:v", codecs_disponible[codec],
@@ -122,6 +122,7 @@ async def encoding_ladder(input_video, output_video_base, codec):
     # Return results with all output video names
     return {"message": "Encoding ladder created successfully.", "output_videos": results}
 
+
 # ENDPOINTS ------------------------------------------
 
 # app.mount("/content", StaticFiles(directory="content"), name="content")
@@ -133,12 +134,14 @@ async def encoding_ladder(input_video, output_video_base, codec):
 # TASK 1
 @app.post("/convert")
 async def convert(input_video: UploadFile = File(...), output_video_name: str = Form(...), codec: str = Form(...), new_resolution: str = Form(...)):
+        input_video = input_video.filename
         await convert_video(input_video, output_video_name, codec, new_resolution)
         return {"message": f"Video {input_video} modified and saved as {output_video_name}"}
      
 # TASK 2
 @app.post("/encodingLadder")
 async def encodingLadder(input_video: UploadFile = File(...), output_video_base: str = Form(...), codec: str = Form(...)):
+        input_video = input_video.filename
         await encoding_ladder(input_video, output_video_base, codec)
         return {"message": f"Video {input_video} modified and saved"}
 
