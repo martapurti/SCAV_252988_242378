@@ -113,7 +113,7 @@ async def encoding_ladder(input_video, output_video_base, codec):
 
     # Create tasks for each resolution using the convert_video function
     for resolution in resolutions:
-        output_video_name = f"{output_video_base}_{resolution}_{codec}.mp4"
+        output_video_name = f"{output_video_base}_{resolution}_{codec}"
         tasks.append(convert_video(input_video, output_video_name, codec, resolution))
 
     # Execute all tasks concurrently
